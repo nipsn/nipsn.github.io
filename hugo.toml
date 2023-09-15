@@ -1,0 +1,80 @@
+baseURL = 'https://nipsn.github.io/'
+languageCode = 'en-us'
+title = """Just a dev's ramblings"""  
+theme='typo'
+
+[taxonomies]
+tag = 'tags'
+
+[params]
+# Meta description
+description = "A Tech Blog"
+
+# Appearance settings
+theme = 'auto'
+colorPalette = 'default'
+hideHeader = false
+
+# Intro on main page, content is markdown
+homeIntroTitle = 'Hi!'
+homeIntroContent = """
+I’m Oscar, a computer engineer based on a small town near Madrid who enjoys tinkering with stuff. This includes computers, old consoles, electronics, etc. I also love self hosting stuff if possible, Linux and FOSS.
+
+This blog is a place where I will put my (informal) thoughts on stuff I find interesting enough to be online for everyone to see or things I think could help others.
+
+Feel free to lurk around the page. If you want to give your input on anything posted here you can to make a PR so we can discuss it.
+
+RSS is available at `https://nipsn.github.io/index.xml` !
+"""
+
+# Collection to display on home
+homeCollectionTitle = 'Posts'
+homeCollection = 'posts'
+
+# Lists parameters
+paginationSize = 100
+listSummaries = true
+listDateFormat = '2 Jan 2006'
+
+# Breadcrumbs
+[params.breadcrumbs]
+enabled = true
+showCurrentPage = true
+home = "Home"
+
+# Social icons
+[[params.social]]
+name = "linkedin"
+url = "https://www.linkedin.com/in/oscar-n-063262209/"
+
+[[params.social]]
+name = "github"
+url = "https://github.com/nipsn"
+
+# Main menu pages
+[[params.menu]]
+name = "home"
+url = "/"
+
+[[params.menu]]
+name = "posts"
+url = "/posts"
+
+[[params.menu]]
+name = "about"
+url = "/about"
+
+[[params.menu]]
+name = "cv"
+url = "/cv"
+
+
+# Syntax highlight on code blocks
+[markup]
+[markup.highlight]
+style = 'algol'
+
+
+[module]
+[[module.imports]]
+path = "github.com/tomfran/typo"
