@@ -1,1 +1,2 @@
-# this is my cv
+# CV
+This is a cut down version of my full CV. If you are curious about the full story and/or want to contact me please do so by writing an email to oscar.nydza@pm.me or by contact me on [Linkedin](https://www.linkedin.com/in/oscar-n-063262209).
