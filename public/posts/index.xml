@@ -6,7 +6,19 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 15 Sep 2023 19:21:15 +0200</lastBuildDate><atom:link href="https://nipsn.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 22 Sep 2023 19:42:45 +0200</lastBuildDate><atom:link href="https://nipsn.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RSS</title>
+      <link>https://nipsn.github.io/posts/rss/</link>
+      <pubDate>Fri, 22 Sep 2023 19:42:45 +0200</pubDate>
+      
+      <guid>https://nipsn.github.io/posts/rss/</guid>
+      <description>RSS RSS is now available at https://nipsn.github.io/index.xml !</description>
+      <content>&lt;h1 id=&#34;rss&#34;&gt;RSS&lt;/h1&gt;
+&lt;p&gt;RSS is now available at &lt;a href=&#34;https://nipsn.github.io/index.xml&#34;&gt;https://nipsn.github.io/index.xml&lt;/a&gt; !&lt;/p&gt;
+</content>
+    </item>
+    
     <item>
       <title>Hello Friend</title>
       <link>https://nipsn.github.io/posts/hello-friend/</link>
