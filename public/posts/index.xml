@@ -6,7 +6,86 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 22 Sep 2023 19:42:45 +0200</lastBuildDate><atom:link href="https://nipsn.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 22 Sep 2023 20:34:14 +0200</lastBuildDate><atom:link href="https://nipsn.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>On deploying a JupyterHub instance (WIP)</title>
+      <link>https://nipsn.github.io/posts/jupyterhub/</link>
+      <pubDate>Fri, 22 Sep 2023 20:34:14 +0200</pubDate>
+      
+      <guid>https://nipsn.github.io/posts/jupyterhub/</guid>
+      <description>Introduction Feel free to skip to the TLDR at the end of the post to see how the final configuration looked like.
+A few weeks ago I was tasked to build a small platform that could host some academic content for programming courses. Before that, we used to give the antendees instructions on how to run a Jupyter Notebook or Lab instance on their local machines and hand out the content to them either via email or on site, but most of the time this was to our detriment, since there was always some user who either didn&amp;rsquo;t get the email with instructions or for any reason couldn&amp;rsquo;t follow the installation instructions.</description>
+      <content>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Feel free to skip to the TLDR at the end of the post to see how the final configuration looked like.&lt;/p&gt;
+&lt;p&gt;A few weeks ago I was tasked to build a small platform that could host some academic content for programming courses. Before that, we used to give the antendees instructions on how to run a Jupyter Notebook or Lab instance on their local machines and hand out the content to them either via email or on site, but most of the time this was to our detriment, since there was always some user who either didn&amp;rsquo;t get the email with instructions or for any reason couldn&amp;rsquo;t follow the installation instructions. This would usually involve us solving their issues one by one, and this could take up to an hour and in terms of money, that&amp;rsquo;s quite a bit of it.&lt;/p&gt;
+&lt;h2 id=&#34;brainstorming&#34;&gt;Brainstorming&lt;/h2&gt;
+&lt;p&gt;So we began thinking about our options and one crossed my mind: since Jupyter Notebook and Lab exist, surely there must be a way to manage individual instances of them. Shortly after, I began investigating and soon enough I found &lt;a href=&#34;https://jupyterhub.readthedocs.io&#34;&gt;JupyterHub&lt;/a&gt;. It looked just what I needed: an aparently simple to use way to manage instances of Jupyter Notebook or Lab that took care of assigning resources by itself (spoiler: it kind of doesn&amp;rsquo;t).&lt;/p&gt;
+&lt;p&gt;On the home page of the documentation they list two options: you either run it on &amp;ldquo;bare metal&amp;rdquo; (directly as a service on a Linux server) or you use Kubernetes to deploy it. The first one seemed kind of dodgy to me at first and the second option looked daunting since I had never used Kubernetes up to that point. In reality I was looking for a middle ground between those two: a way to deploy the service that made users unable to tamper with any other user&amp;rsquo;s files (not even seeing them) that was also relatively easy for me to get up and running.&lt;/p&gt;
+&lt;p&gt;Enter Docker! I was able to find a half-baked configuration on &lt;a href=&#34;&#34;&gt;JupyterHub&amp;rsquo;s Github page&lt;/a&gt;. It basically included a Dockerfile for the Hub, since it pulled the instance image from docker.io . That wasn&amp;rsquo;t going to cut it for me so I got to work on getting a custom Instance image set.&lt;/p&gt;
+&lt;h2 id=&#34;the-instances&#34;&gt;The Instances&lt;/h2&gt;
+&lt;p&gt;There were a couple of things we 100% needed on each instance: the ability to load the course&amp;rsquo;s material and the Scala 3 kernel. I decided to start developing a custom Jupyter Lab image based on &lt;code&gt;jupyter/base-notebook&lt;/code&gt;. I needed to first off install the Scala kernel dependencies, so on the dockerfile I used the &lt;code&gt;root&lt;/code&gt; user to &lt;code&gt;apt install&lt;/code&gt; everything needed:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;USER root
+
+RUN apt-get update &amp;amp;&amp;amp; \
+    apt-get install -y openjdk-8-jdk &amp;amp;&amp;amp; \
+    apt-get install -y ant curl git python3-pip &amp;amp;&amp;amp; \
+    apt-get clean;
+
+USER $NB_UID
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The &lt;code&gt;$NB_UID&lt;/code&gt; user is the default user on the notebook/lab instance.&lt;/p&gt;
+&lt;p&gt;Then, for the kernel, I decided to go with &lt;a href=&#34;https://almond.sh/&#34;&gt;almond&amp;rsquo;s&lt;/a&gt; Scala kernel. In the following snippet I install the Scala 2.12.17 and Scala 3 ones from all the availables:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;RUN curl -Lo coursier https://git.io/coursier-cli &amp;amp;&amp;amp; \
+    chmod +x coursier &amp;amp;&amp;amp; \
+    ./coursier launch --fork almond:0.13.14 --scala 3.2.0 -- --install --id scala3 --display-name &amp;#34;Scala 3&amp;#34; &amp;amp;&amp;amp; \
+    ./coursier launch almond:0.13.14 --scala 2.12.17 -- --install --id scala212 --display-name &amp;#34;Scala 2.12&amp;#34; &amp;amp;&amp;amp; \
+    rm -f coursier;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In the end, we decided to just use the Scala 3 kernel so the final version of the dockerfile had the 4th line from the previous snippet removed.&lt;/p&gt;
+&lt;p&gt;With that out of the way, we just needed to add the course&amp;rsquo;s material so every user can access it the first time they log into the platform. In the following snippet, I show how to clone a specific folder from a public repo, in this case &lt;a href=&#34;https://github.com/almond-sh/examples&#34;&gt;almond&amp;rsquo;s example notebooks&lt;/a&gt;:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;RUN mkdir notebooks &amp;amp;&amp;amp; cd notebooks &amp;amp;&amp;amp; \
+    git init &amp;amp;&amp;amp; \
+    git config core.sparseCheckout true &amp;amp;&amp;amp; \
+    git remote add -f origin https://github.com/almond-sh/examples &amp;amp;&amp;amp; \
+    echo &amp;#34;notebooks&amp;#34; &amp;gt;&amp;gt; .git/info/sparse-checkout &amp;amp;&amp;amp; git pull origin master
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;For that, we are using a sparse checkout. If needed, we could just pull the whole repo. However, since the course&amp;rsquo;s material was hosted on a private repo, our best option was to &lt;code&gt;ADD&lt;/code&gt; the content as a &lt;code&gt;.tar.gz&lt;/code&gt;. By doing something like &lt;code&gt;ADD content.tar.gz /home/jovyan/work/&lt;/code&gt;, we create a folder called &lt;code&gt;content&lt;/code&gt; inside the &lt;code&gt;work&lt;/code&gt; directory, so a good solution overall.&lt;/p&gt;
+&lt;p&gt;There is another option available, but because of time contstrains I wasn&amp;rsquo;t able to explore it: creating a Jupyter hook that run everytime the user logged in that would pull the most recent version of the content to their &lt;code&gt;work&lt;/code&gt; directory. There is one single thing that bothers me about that approach: if we are dealing with a private repository, we would have to put a ssh key inside of every user&amp;rsquo;s instance, and that&amp;rsquo;s not very secure IMO, since they would have non-zero permissions on the repo. There must be another way of doing this, but I couldn&amp;rsquo;t figure out how.&lt;/p&gt;
+&lt;h2 id=&#34;the-hub&#34;&gt;The Hub&lt;/h2&gt;
+&lt;p&gt;The Hub&amp;rsquo;s required few changes. The original dockerfile pulls the latest &lt;code&gt;jupyterhub/jupyterhub&lt;/code&gt; image and uses &lt;code&gt;pip&lt;/code&gt; to install both &lt;code&gt;dockerspawner&lt;/code&gt; and &lt;code&gt;jupyterhub-nativeauthenticator&lt;/code&gt; (spoiler: we will change this last package later on), then runs the service based on a config file.&lt;/p&gt;
+&lt;p&gt;This config file is called &lt;code&gt;jupyterhub_config.py&lt;/code&gt;, and it&amp;rsquo;s where most of the service&amp;rsquo;s configuration is done. You can check all the available options &lt;a href=&#34;https://jupyterhub.readthedocs.io/en/stable/reference/config-reference.html&#34;&gt;here&lt;/a&gt;. We already had some basic configuration done from this example I found, so in my case it was just a matter of adding the stuff we needed. Of course, since we are using the &lt;code&gt;dockerspawner&lt;/code&gt;, we will need to add some lines to our file:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Spawn single-user servers as Docker containers&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;c&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;JupyterHub&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;spawner_class &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;dockerspawner.DockerSpawner&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Spawn containers from this image&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;c&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DockerSpawner&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;image &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; os&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;environ[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DOCKER_NOTEBOOK_IMAGE&amp;#34;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# JupyterHub requires a single-user instance of the Notebook server, so we&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# default to using the `start-singleuser.sh` script included in the&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# jupyter/docker-stacks *-notebook images as the Docker run command when&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# spawning containers.  Optionally, you can override the Docker run command&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# using the DOCKER_SPAWN_CMD environment variable.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;spawn_cmd &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; os&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;environ&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DOCKER_SPAWN_CMD&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;start-singleuser.sh&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;c&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DockerSpawner&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cmd &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; spawn_cmd
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Connect containers to this Docker network&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;network_name &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; os&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;environ[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DOCKER_NETWORK_NAME&amp;#34;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;c&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DockerSpawner&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;use_internal_ip &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;c&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DockerSpawner&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;network_name &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; network_name
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Mount the real user&amp;#39;s Docker volume on the host to the notebook user&amp;#39;s&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# notebook directory in the container&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;c&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DockerSpawner&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;volumes &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;jupyterhub-user-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{username}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;: notebook_dir}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then again, this lines were already provided for me.&lt;/p&gt;
+&lt;p&gt;With that out of the way, let&amp;rsquo;s see how to tie all of this together on docker-compose.&lt;/p&gt;
+&lt;h2 id=&#34;getting-everything-working-together-part-1&#34;&gt;Getting everything working together (part 1)&lt;/h2&gt;
+&lt;h2 id=&#34;testing-aws&#34;&gt;Testing AWS&lt;/h2&gt;
+&lt;h2 id=&#34;getting-everything-working-together-part-2&#34;&gt;Getting everything working together (part 2)&lt;/h2&gt;
+&lt;h2 id=&#34;stress-testing&#34;&gt;Stress testing&lt;/h2&gt;
+&lt;h2 id=&#34;getting-everything-working-together-part-3&#34;&gt;Getting everything working together (part 3)&lt;/h2&gt;
+&lt;h2 id=&#34;getting-https&#34;&gt;Getting HTTPS&lt;/h2&gt;
+&lt;h2 id=&#34;deploy-the-monster&#34;&gt;Deploy the monster!&lt;/h2&gt;
+&lt;h2 id=&#34;conclusion-and-tldr&#34;&gt;Conclusion and TLDR&lt;/h2&gt;
+</content>
+    </item>
+    
     <item>
       <title>RSS</title>
       <link>https://nipsn.github.io/posts/rss/</link>

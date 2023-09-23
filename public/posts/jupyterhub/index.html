@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>On deploying a JupyterHub instance (WIP) :: </title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A quick overview of how I built a Docker based JupyterHub instance on AWS." />
+<meta name="keywords" content="JupyterHub, Jupyter, docker, AWS" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://nipsn.github.io/posts/jupyterhub/" />
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://nipsn.github.io/styles.css">
+
+
+
+
+
+
+
+  <link rel="shortcut icon" href="https://nipsn.github.io/img/theme-colors/green.png">
+  <link rel="apple-touch-icon" href="https://nipsn.github.io/img/theme-colors/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="On deploying a JupyterHub instance (WIP)">
+<meta property="og:description" content="A quick overview of how I built a Docker based JupyterHub instance on AWS." />
+<meta property="og:url" content="https://nipsn.github.io/posts/jupyterhub/" />
+<meta property="og:site_name" content="" />
+
+  
+  
+  <meta property="og:image" content="https://nipsn.github.io">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2023-09-22 20:34:14 &#43;0200 CEST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    nipsn&#39;s blog
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/cv">CV</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/about" >About</a></li>
+        
+      
+        
+          <li><a href="/cv" >CV</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://nipsn.github.io/posts/jupyterhub/">On deploying a JupyterHub instance (WIP)</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2023-09-22</time><span class="post-author">nipsn</span><span class="post-reading-time">6 min read (1104 words)</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://nipsn.github.io/tags/jupyterhub/">JupyterHub</a>&nbsp;
+      
+      #<a href="https://nipsn.github.io/tags/jupyter/">Jupyter</a>&nbsp;
+      
+      #<a href="https://nipsn.github.io/tags/docker/">docker</a>&nbsp;
+      
+      #<a href="https://nipsn.github.io/tags/aws/">AWS</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+    <div class="table-of-contents">
+      <h2>
+        Table of Contents
+      </h2>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#brainstorming">Brainstorming</a></li>
+    <li><a href="#the-instances">The Instances</a></li>
+    <li><a href="#the-hub">The Hub</a></li>
+    <li><a href="#getting-everything-working-together-part-1">Getting everything working together (part 1)</a></li>
+    <li><a href="#testing-aws">Testing AWS</a></li>
+    <li><a href="#getting-everything-working-together-part-2">Getting everything working together (part 2)</a></li>
+    <li><a href="#stress-testing">Stress testing</a></li>
+    <li><a href="#getting-everything-working-together-part-3">Getting everything working together (part 3)</a></li>
+    <li><a href="#getting-https">Getting HTTPS</a></li>
+    <li><a href="#deploy-the-monster">Deploy the monster!</a></li>
+    <li><a href="#conclusion-and-tldr">Conclusion and TLDR</a></li>
+  </ul>
+</nav>
+    </div>
+  
+
+  <div class="post-content"><div>
+        <h2 id="introduction">Introduction<a href="#introduction" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Feel free to skip to the TLDR at the end of the post to see how the final configuration looked like.</p>
+<p>A few weeks ago I was tasked to build a small platform that could host some academic content for programming courses. Before that, we used to give the antendees instructions on how to run a Jupyter Notebook or Lab instance on their local machines and hand out the content to them either via email or on site, but most of the time this was to our detriment, since there was always some user who either didn&rsquo;t get the email with instructions or for any reason couldn&rsquo;t follow the installation instructions. This would usually involve us solving their issues one by one, and this could take up to an hour and in terms of money, that&rsquo;s quite a bit of it.</p>
+<h2 id="brainstorming">Brainstorming<a href="#brainstorming" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>So we began thinking about our options and one crossed my mind: since Jupyter Notebook and Lab exist, surely there must be a way to manage individual instances of them. Shortly after, I began investigating and soon enough I found <a href="https://jupyterhub.readthedocs.io">JupyterHub</a>. It looked just what I needed: an aparently simple to use way to manage instances of Jupyter Notebook or Lab that took care of assigning resources by itself (spoiler: it kind of doesn&rsquo;t).</p>
+<p>On the home page of the documentation they list two options: you either run it on &ldquo;bare metal&rdquo; (directly as a service on a Linux server) or you use Kubernetes to deploy it. The first one seemed kind of dodgy to me at first and the second option looked daunting since I had never used Kubernetes up to that point. In reality I was looking for a middle ground between those two: a way to deploy the service that made users unable to tamper with any other user&rsquo;s files (not even seeing them) that was also relatively easy for me to get up and running.</p>
+<p>Enter Docker! I was able to find a half-baked configuration on <a href="">JupyterHub&rsquo;s Github page</a>. It basically included a Dockerfile for the Hub, since it pulled the instance image from docker.io . That wasn&rsquo;t going to cut it for me so I got to work on getting a custom Instance image set.</p>
+<h2 id="the-instances">The Instances<a href="#the-instances" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>There were a couple of things we 100% needed on each instance: the ability to load the course&rsquo;s material and the Scala 3 kernel. I decided to start developing a custom Jupyter Lab image based on <code>jupyter/base-notebook</code>. I needed to first off install the Scala kernel dependencies, so on the dockerfile I used the <code>root</code> user to <code>apt install</code> everything needed:</p>
+<pre tabindex="0"><code>USER root
+
+RUN apt-get update &amp;&amp; \
+    apt-get install -y openjdk-8-jdk &amp;&amp; \
+    apt-get install -y ant curl git python3-pip &amp;&amp; \
+    apt-get clean;
+
+USER $NB_UID
+</code></pre><p>The <code>$NB_UID</code> user is the default user on the notebook/lab instance.</p>
+<p>Then, for the kernel, I decided to go with <a href="https://almond.sh/">almond&rsquo;s</a> Scala kernel. In the following snippet I install the Scala 2.12.17 and Scala 3 ones from all the availables:</p>
+<pre tabindex="0"><code>RUN curl -Lo coursier https://git.io/coursier-cli &amp;&amp; \
+    chmod +x coursier &amp;&amp; \
+    ./coursier launch --fork almond:0.13.14 --scala 3.2.0 -- --install --id scala3 --display-name &#34;Scala 3&#34; &amp;&amp; \
+    ./coursier launch almond:0.13.14 --scala 2.12.17 -- --install --id scala212 --display-name &#34;Scala 2.12&#34; &amp;&amp; \
+    rm -f coursier;
+</code></pre><p>In the end, we decided to just use the Scala 3 kernel so the final version of the dockerfile had the 4th line from the previous snippet removed.</p>
+<p>With that out of the way, we just needed to add the course&rsquo;s material so every user can access it the first time they log into the platform. In the following snippet, I show how to clone a specific folder from a public repo, in this case <a href="https://github.com/almond-sh/examples">almond&rsquo;s example notebooks</a>:</p>
+<pre tabindex="0"><code>RUN mkdir notebooks &amp;&amp; cd notebooks &amp;&amp; \
+    git init &amp;&amp; \
+    git config core.sparseCheckout true &amp;&amp; \
+    git remote add -f origin https://github.com/almond-sh/examples &amp;&amp; \
+    echo &#34;notebooks&#34; &gt;&gt; .git/info/sparse-checkout &amp;&amp; git pull origin master
+</code></pre><p>For that, we are using a sparse checkout. If needed, we could just pull the whole repo. However, since the course&rsquo;s material was hosted on a private repo, our best option was to <code>ADD</code> the content as a <code>.tar.gz</code>. By doing something like <code>ADD content.tar.gz /home/jovyan/work/</code>, we create a folder called <code>content</code> inside the <code>work</code> directory, so a good solution overall.</p>
+<p>There is another option available, but because of time contstrains I wasn&rsquo;t able to explore it: creating a Jupyter hook that run everytime the user logged in that would pull the most recent version of the content to their <code>work</code> directory. There is one single thing that bothers me about that approach: if we are dealing with a private repository, we would have to put a ssh key inside of every user&rsquo;s instance, and that&rsquo;s not very secure IMO, since they would have non-zero permissions on the repo. There must be another way of doing this, but I couldn&rsquo;t figure out how.</p>
+<h2 id="the-hub">The Hub<a href="#the-hub" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>The Hub&rsquo;s required few changes. The original dockerfile pulls the latest <code>jupyterhub/jupyterhub</code> image and uses <code>pip</code> to install both <code>dockerspawner</code> and <code>jupyterhub-nativeauthenticator</code> (spoiler: we will change this last package later on), then runs the service based on a config file.</p>
+<p>This config file is called <code>jupyterhub_config.py</code>, and it&rsquo;s where most of the service&rsquo;s configuration is done. You can check all the available options <a href="https://jupyterhub.readthedocs.io/en/stable/reference/config-reference.html">here</a>. We already had some basic configuration done from this example I found, so in my case it was just a matter of adding the stuff we needed. Of course, since we are using the <code>dockerspawner</code>, we will need to add some lines to our file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Spawn single-user servers as Docker containers</span>
+</span></span><span style="display:flex;"><span>c<span style="color:#f92672">.</span>JupyterHub<span style="color:#f92672">.</span>spawner_class <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;dockerspawner.DockerSpawner&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Spawn containers from this image</span>
+</span></span><span style="display:flex;"><span>c<span style="color:#f92672">.</span>DockerSpawner<span style="color:#f92672">.</span>image <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#34;DOCKER_NOTEBOOK_IMAGE&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># JupyterHub requires a single-user instance of the Notebook server, so we</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># default to using the `start-singleuser.sh` script included in the</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># jupyter/docker-stacks *-notebook images as the Docker run command when</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># spawning containers.  Optionally, you can override the Docker run command</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># using the DOCKER_SPAWN_CMD environment variable.</span>
+</span></span><span style="display:flex;"><span>spawn_cmd <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;DOCKER_SPAWN_CMD&#34;</span>, <span style="color:#e6db74">&#34;start-singleuser.sh&#34;</span>)
+</span></span><span style="display:flex;"><span>c<span style="color:#f92672">.</span>DockerSpawner<span style="color:#f92672">.</span>cmd <span style="color:#f92672">=</span> spawn_cmd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Connect containers to this Docker network</span>
+</span></span><span style="display:flex;"><span>network_name <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#34;DOCKER_NETWORK_NAME&#34;</span>]
+</span></span><span style="display:flex;"><span>c<span style="color:#f92672">.</span>DockerSpawner<span style="color:#f92672">.</span>use_internal_ip <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>c<span style="color:#f92672">.</span>DockerSpawner<span style="color:#f92672">.</span>network_name <span style="color:#f92672">=</span> network_name
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Mount the real user&#39;s Docker volume on the host to the notebook user&#39;s</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># notebook directory in the container</span>
+</span></span><span style="display:flex;"><span>c<span style="color:#f92672">.</span>DockerSpawner<span style="color:#f92672">.</span>volumes <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;jupyterhub-user-</span><span style="color:#e6db74">{username}</span><span style="color:#e6db74">&#34;</span>: notebook_dir}
+</span></span></code></pre></div><p>Then again, this lines were already provided for me.</p>
+<p>With that out of the way, let&rsquo;s see how to tie all of this together on docker-compose.</p>
+<h2 id="getting-everything-working-together-part-1">Getting everything working together (part 1)<a href="#getting-everything-working-together-part-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="testing-aws">Testing AWS<a href="#testing-aws" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="getting-everything-working-together-part-2">Getting everything working together (part 2)<a href="#getting-everything-working-together-part-2" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="stress-testing">Stress testing<a href="#stress-testing" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="getting-everything-working-together-part-3">Getting everything working together (part 3)<a href="#getting-everything-working-together-part-3" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="getting-https">Getting HTTPS<a href="#getting-https" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="deploy-the-monster">Deploy the monster!<a href="#deploy-the-monster" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="conclusion-and-tldr">Conclusion and TLDR<a href="#conclusion-and-tldr" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        
+        <span class="button next">
+            <a href="https://nipsn.github.io/posts/rss/">
+                <span class="button__text">RSS</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+    
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

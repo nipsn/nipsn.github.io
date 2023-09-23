@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title></title>
-    <link>https://nipsn.github.io/</link>
-    <description>Recent content on </description>
+    <title>docker on </title>
+    <link>https://nipsn.github.io/tags/docker/</link>
+    <description>Recent content in docker on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 22 Sep 2023 20:34:14 +0200</lastBuildDate><atom:link href="https://nipsn.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 22 Sep 2023 20:34:14 +0200</lastBuildDate><atom:link href="https://nipsn.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>On deploying a JupyterHub instance (WIP)</title>
       <link>https://nipsn.github.io/posts/jupyterhub/</link>
@@ -83,31 +83,6 @@ USER $NB_UID
 &lt;h2 id=&#34;getting-https&#34;&gt;Getting HTTPS&lt;/h2&gt;
 &lt;h2 id=&#34;deploy-the-monster&#34;&gt;Deploy the monster!&lt;/h2&gt;
 &lt;h2 id=&#34;conclusion-and-tldr&#34;&gt;Conclusion and TLDR&lt;/h2&gt;
-</content>
-    </item>
-    
-    <item>
-      <title>RSS</title>
-      <link>https://nipsn.github.io/posts/rss/</link>
-      <pubDate>Fri, 22 Sep 2023 19:42:45 +0200</pubDate>
-      
-      <guid>https://nipsn.github.io/posts/rss/</guid>
-      <description>RSS RSS is now available at https://nipsn.github.io/index.xml !</description>
-      <content>&lt;h1 id=&#34;rss&#34;&gt;RSS&lt;/h1&gt;
-&lt;p&gt;RSS is now available at &lt;a href=&#34;https://nipsn.github.io/index.xml&#34;&gt;https://nipsn.github.io/index.xml&lt;/a&gt; !&lt;/p&gt;
-</content>
-    </item>
-    
-    <item>
-      <title>Hello Friend</title>
-      <link>https://nipsn.github.io/posts/hello-friend/</link>
-      <pubDate>Fri, 15 Sep 2023 19:21:15 +0200</pubDate>
-      
-      <guid>https://nipsn.github.io/posts/hello-friend/</guid>
-      <description>Hello, friend. First post, such woah! Testing if this works. Seems it does! Just followed the official documentation of Hugo and the terminal theme&amp;rsquo;s docs</description>
-      <content>&lt;p&gt;Hello, friend. First post, such woah!
-Testing if this works.
-Seems it does! Just followed the &lt;a href=&#34;https://gohugo.io/getting-started/quick-start/&#34;&gt;official documentation of Hugo&lt;/a&gt; and &lt;a href=&#34;https://themes.gohugo.io/themes/hugo-theme-terminal/&#34;&gt;the terminal theme&amp;rsquo;s docs&lt;/a&gt;&lt;/p&gt;
 </content>
     </item>
     
