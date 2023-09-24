@@ -142,7 +142,7 @@
   <h1 class="post-title">
     <a href="https://nipsn.github.io/posts/jupyterhub/">On deploying a JupyterHub instance (WIP)</a>
   </h1>
-  <div class="post-meta"><time class="post-date">2023-09-22</time><span class="post-author">nipsn</span><span class="post-reading-time">6 min read (1104 words)</span></div>
+  <div class="post-meta"><time class="post-date">2023-09-22</time><span class="post-author">nipsn</span><span class="post-reading-time">6 min read (1237 words)</span></div>
 
   
     <span class="post-tags">
@@ -246,6 +246,24 @@ USER $NB_UID
 </span></span></code></pre></div><p>Then again, this lines were already provided for me.</p>
 <p>With that out of the way, let&rsquo;s see how to tie all of this together on docker-compose.</p>
 <h2 id="getting-everything-working-together-part-1">Getting everything working together (part 1)<a href="#getting-everything-working-together-part-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>I started from the provided <code>docker-compose.yml</code> file, which had the configuration for the <code>hub</code> service already done, so I didn&rsquo;t have to put much work into it. The <code>instance</code> service however was being directly pulled from docker.io. Since I didn&rsquo;t really want to pull an image, but rather build one locally from a dockerfile, I decided to add the following lines:</p>
+<pre tabindex="0"><code>services:
+ instance:
+    build:
+      context: .
+      dockerfile: Instance.dockerfile
+    image: instance
+    container_name: instance
+
+ hub:
+    ...
+</code></pre><p>Here, we specify that there should be a <code>Instance.dockerfile</code> in the current context (<code>.</code>), which we will call <code>instance</code>. Simple stuff.</p>
+<p>Now, having the following file structure:</p>
+<pre tabindex="0"><code>├── docker-compose.yml
+├── Dockerfile.jupyterhub
+├── Instance.dockerfile
+└── jupyterhub_config.py
+</code></pre><p>We can do a <code>docker-compose build</code> followed by a <code>docker-compose up</code>. Aaaand it&rsquo;s working! Time to look for a place to host these services.</p>
 <h2 id="testing-aws">Testing AWS<a href="#testing-aws" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h2 id="getting-everything-working-together-part-2">Getting everything working together (part 2)<a href="#getting-everything-working-together-part-2" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h2 id="stress-testing">Stress testing<a href="#stress-testing" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>

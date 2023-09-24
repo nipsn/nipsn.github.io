@@ -107,6 +107,34 @@ With that out of the way, let's see how to tie all of this together on docker-co
 
 ## Getting everything working together (part 1)
 
+I started from the provided `docker-compose.yml` file, which had the configuration for the `hub` service already done, so I didn't have to put much work into it. The `instance` service however was being directly pulled from docker.io. Since I didn't really want to pull an image, but rather build one locally from a dockerfile, I decided to add the following lines:
+
+```
+services:
+ instance:
+    build:
+      context: .
+      dockerfile: Instance.dockerfile
+    image: instance
+    container_name: instance
+
+ hub:
+    ...
+```
+
+Here, we specify that there should be a `Instance.dockerfile` in the current context (`.`), which we will call `instance`. Simple stuff.
+
+Now, having the following file structure:
+
+```
+├── docker-compose.yml
+├── Dockerfile.jupyterhub
+├── Instance.dockerfile
+└── jupyterhub_config.py
+```
+
+We can do a `docker-compose build` followed by a `docker-compose up`. Aaaand it's working! Time to look for a place to host these services.
+
 ## Testing AWS
 
 ## Getting everything working together (part 2)

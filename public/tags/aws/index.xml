@@ -76,6 +76,24 @@ USER $NB_UID
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then again, this lines were already provided for me.&lt;/p&gt;
 &lt;p&gt;With that out of the way, let&amp;rsquo;s see how to tie all of this together on docker-compose.&lt;/p&gt;
 &lt;h2 id=&#34;getting-everything-working-together-part-1&#34;&gt;Getting everything working together (part 1)&lt;/h2&gt;
+&lt;p&gt;I started from the provided &lt;code&gt;docker-compose.yml&lt;/code&gt; file, which had the configuration for the &lt;code&gt;hub&lt;/code&gt; service already done, so I didn&amp;rsquo;t have to put much work into it. The &lt;code&gt;instance&lt;/code&gt; service however was being directly pulled from docker.io. Since I didn&amp;rsquo;t really want to pull an image, but rather build one locally from a dockerfile, I decided to add the following lines:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;services:
+ instance:
+    build:
+      context: .
+      dockerfile: Instance.dockerfile
+    image: instance
+    container_name: instance
+
+ hub:
+    ...
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here, we specify that there should be a &lt;code&gt;Instance.dockerfile&lt;/code&gt; in the current context (&lt;code&gt;.&lt;/code&gt;), which we will call &lt;code&gt;instance&lt;/code&gt;. Simple stuff.&lt;/p&gt;
+&lt;p&gt;Now, having the following file structure:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;├── docker-compose.yml
+├── Dockerfile.jupyterhub
+├── Instance.dockerfile
+└── jupyterhub_config.py
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We can do a &lt;code&gt;docker-compose build&lt;/code&gt; followed by a &lt;code&gt;docker-compose up&lt;/code&gt;. Aaaand it&amp;rsquo;s working! Time to look for a place to host these services.&lt;/p&gt;
 &lt;h2 id=&#34;testing-aws&#34;&gt;Testing AWS&lt;/h2&gt;
 &lt;h2 id=&#34;getting-everything-working-together-part-2&#34;&gt;Getting everything working together (part 2)&lt;/h2&gt;
 &lt;h2 id=&#34;stress-testing&#34;&gt;Stress testing&lt;/h2&gt;
