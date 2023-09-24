@@ -17,7 +17,7 @@ theme = "terminal"
   themeColor = "green"
 
   # if you set this to 0, only submenu trigger will be visible
-  showMenuItems = 2
+  showMenuItems = 3
 
   # show selector to switch language
   showLanguageSelector = false
@@ -87,3 +87,7 @@ theme = "terminal"
         identifier = "cv"
         name = "CV"
         url = "/cv"
+      [[languages.en.menu.main]]
+        identifier = "rss"
+        name = "RSS"
+        url = "/index.xml"
