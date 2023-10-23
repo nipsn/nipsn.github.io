@@ -3,7 +3,25 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://nipsn.github.io/</loc>
-    <lastmod>2023-09-22T20:34:14+02:00</lastmod>
+    <lastmod>2023-10-23T19:12:26+02:00</lastmod>
+  </url><url>
+    <loc>https://nipsn.github.io/tags/kernel/</loc>
+    <lastmod>2023-10-23T19:12:26+02:00</lastmod>
+  </url><url>
+    <loc>https://nipsn.github.io/tags/lfd103/</loc>
+    <lastmod>2023-10-23T19:12:26+02:00</lastmod>
+  </url><url>
+    <loc>https://nipsn.github.io/tags/linux/</loc>
+    <lastmod>2023-10-23T19:12:26+02:00</lastmod>
+  </url><url>
+    <loc>https://nipsn.github.io/posts/lfd103ch2/</loc>
+    <lastmod>2023-10-23T19:12:26+02:00</lastmod>
+  </url><url>
+    <loc>https://nipsn.github.io/posts/</loc>
+    <lastmod>2023-10-23T19:12:26+02:00</lastmod>
+  </url><url>
+    <loc>https://nipsn.github.io/tags/</loc>
+    <lastmod>2023-10-23T19:12:26+02:00</lastmod>
   </url><url>
     <loc>https://nipsn.github.io/tags/aws/</loc>
     <lastmod>2023-09-22T20:34:14+02:00</lastmod>
@@ -18,12 +36,6 @@
     <lastmod>2023-09-22T20:34:14+02:00</lastmod>
   </url><url>
     <loc>https://nipsn.github.io/posts/jupyterhub/</loc>
-    <lastmod>2023-09-22T20:34:14+02:00</lastmod>
-  </url><url>
-    <loc>https://nipsn.github.io/posts/</loc>
-    <lastmod>2023-09-22T20:34:14+02:00</lastmod>
-  </url><url>
-    <loc>https://nipsn.github.io/tags/</loc>
     <lastmod>2023-09-22T20:34:14+02:00</lastmod>
   </url><url>
     <loc>https://nipsn.github.io/tags/blog/</loc>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kernel on </title>
+    <link>https://nipsn.github.io/tags/kernel/</link>
+    <description>Recent content in kernel on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 23 Oct 2023 19:12:26 +0200</lastBuildDate><atom:link href="https://nipsn.github.io/tags/kernel/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>On LFD103 Chapter 2</title>
+      <link>https://nipsn.github.io/posts/lfd103ch2/</link>
+      <pubDate>Mon, 23 Oct 2023 19:12:26 +0200</pubDate>
+      
+      <guid>https://nipsn.github.io/posts/lfd103ch2/</guid>
+      <description>Chapter 2 Thoughts This chapter is quite simple but it serves as an introduction to how the kernel is being worked on. As an outsider, it honestly seems farfetched that this whole system works without failure. Since all code eventually channels through Linus itself, I wonder what the protocol is when he isn&amp;rsquo;t there anymore, like what happened to Vim recently. It will probably be ok, but I still think that this is a lot of responsability for a single individual.</description>
+      <content>&lt;h1 id=&#34;chapter-2&#34;&gt;Chapter 2&lt;/h1&gt;
+&lt;h2 id=&#34;thoughts&#34;&gt;Thoughts&lt;/h2&gt;
+&lt;p&gt;This chapter is quite simple but it serves as an introduction to how the kernel is being worked on. As an outsider, it honestly seems farfetched that this whole system works without failure. Since all code eventually channels through Linus itself, I wonder what the protocol is when he isn&amp;rsquo;t there anymore, like what happened to Vim recently. It will probably be ok, but I still think that this is a lot of responsability for a single individual. I&amp;rsquo;m most likely missing the bigger picture though.&lt;/p&gt;
+&lt;h2 id=&#34;notes&#34;&gt;Notes&lt;/h2&gt;
+&lt;h3 id=&#34;release-cycle&#34;&gt;Release cycle&lt;/h3&gt;
+&lt;p&gt;There is usually a new release of the kernel roughly every 2 months and several stable and extended stable releases once a week.Releases are time-based, not feature-based, so things are shipped when they are ready to be shipped. There is no set date.&lt;/p&gt;
+&lt;p&gt;The release cycle looks something like this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Linus releases a new kernel and opens a 2-week merge window. During this time, he pulls code from subsystem maintainers, which send signed git pull requests. At the end of this period Linus releases the first release candidate (&lt;code&gt;rc1&lt;/code&gt;) and thus the merge window is closed.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;From then on, there is another 6 to 7 week period of bug fixing. Each of these weeks see the release of a &lt;code&gt;rc&lt;/code&gt;. There is sometimes an &lt;code&gt;rc8&lt;/code&gt; if the quality is not up to par yet.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Then, there is a 3 week long &lt;em&gt;quiet period&lt;/em&gt;, which starts a week before the release and continues through the 2 week merge window.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;See &lt;a href=&#34;https://d36ai2hkxl16us.cloudfront.net/course-uploads/e0df7fbf-a057-42af-8a1f-590912be5460/03bno4kvu510-LinuxDevelopmentCycle.jpg&#34;&gt;this image&lt;/a&gt; for more info.&lt;/p&gt;
+&lt;h3 id=&#34;subsystem-maintainers&#34;&gt;Subsystem maintainers&lt;/h3&gt;
+&lt;p&gt;Each subsystem has its maintainer(s). For each of these there is a &lt;code&gt;MAINTAINERS&lt;/code&gt; file describing the maintainers. Almost every subsystem has a mailing list.&lt;/p&gt;
+&lt;p&gt;These maintainers receive contributions and patches from developers and review them. If correct, it later gets pulled to the mainline kernel.&lt;/p&gt;
+&lt;h3 id=&#34;quick-bits&#34;&gt;Quick bits&lt;/h3&gt;
+&lt;p&gt;A patch is a small incremental change made to the kernel.&lt;/p&gt;
+&lt;p&gt;The quiet period overlaps with the merge window.&lt;/p&gt;
+&lt;p&gt;The quiet period is 3 weeks long.&lt;/p&gt;
+&lt;p&gt;There are usually 7 or 8 RCs (Release Candidates) before a mainline kernel release.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;MAINTAINERS&lt;/code&gt; file contains information on who maintains the subsystem.&lt;/p&gt;
+&lt;p&gt;Several kernel git repos are hosted on kernel.org .&lt;/p&gt;
+&lt;p&gt;Patch emails are not sent to Linus.&lt;/p&gt;
+&lt;p&gt;New features don&amp;rsquo;t go into stable releases.&lt;/p&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>
