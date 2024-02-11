@@ -76,9 +76,7 @@ SEPTEMBER 2020-MAY 2021
 
 * Spark
 
-* KDB+
-
-* q
+* KDB+/q
 
 * Pandas
 
