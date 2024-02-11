@@ -8,15 +8,16 @@ Computer engineer with professional experience in Scala, Python and q. Always in
 
 **Habla Computing, Madrid** - *Software developer* - October 2021-ONGOING
 
-## Major projects
-
+## Client projects
 * *(BBVA CIB)* **Several projects using Spark and PySpark** - October 2021-December 2023
 * *(BBVA CIB)* **Code migration from Pandas/SQL to KDB+/q** - January 2023-June 2023
+* *(BBVA CIB)* **Dashboard development in MicroStrategy and KX Dashboards** - April 2022, June 2023 respectively
 
-## Minor projects
+## Other projects
 
 * *(Habla Computing)* **JupyterHub deployment on AWS using Docker** - August 2023
-* *(BBVA CIB)* **Dashboard development in MicroStrategy and KX Dashboards** - April 2022, June 2023 respectively
+* *(Habla Computing)* **PyKX and ML demos** - July 2023 - October 2023
+* *(Habla Computing)* **PyKX Library Contribution** - November 2023 - Ongoing
 
 ## Trained on (chronologically)
 
@@ -29,6 +30,8 @@ Computer engineer with professional experience in Scala, Python and q. Always in
 
 * KX Fundamentals Capstone
 * KX Advanced Course
+* Beginner's Guide to Linux Kernel Development (LFD103)
+* Getting Started With Rust (LFEL100)
 
 ## Education
 
@@ -47,13 +50,19 @@ SEPTEMBER 2020-MAY 2021
 
 **KX Academy** — *Advanced Capstone* JUNE 2023
 
+**The Linux Foundation** - *Beginner's Guide to Linux Kernel Development (LFD103)*  NOVEMBER 2023
+
+**The Linux Foundation** - *Getting Started with Rust (LFEL100)* FEBUARY 2024
+
 ## Technologies
+
+* Python
+
+* Rust
 
 * Scala
 
 * Java
-
-* Python
 
 * SQL
 
@@ -82,6 +91,8 @@ Built a small footprint, DIY home CCTV system using [Shinobi](https://shinobi.vi
 Home network DHCP and recursive DNS server using [Pi-hole](https://pi-hole.net/) and Unbound.
 
 Contributed to [FreeTube](https://github.com/FreeTubeApp/FreeTube) with some Spanish translations.
+
+Currently learning Rust on my own.
 
 Again, anything on this blog :)
 
