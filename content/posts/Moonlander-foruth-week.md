@@ -1,17 +1,14 @@
-+++
-title = "Moonlander Month Review"
-date = "2024-06-14T18:41:15+02:00"
-author = "nipsn"
-authorTwitter = "" #do not include @
-cover = ""
-tags = ["Keyboard", "Moonlander", "ZSA"]
-keywords = ["Keyboard", "Moonlander", "ZSA"]
-description = "Thoughts after a month with the Moonlander"
-showFullContent = false
-readingTime = true
-hideComments = false
-color = "" #color from the theme settings
-+++
+---
+title: "Moonlander Month Review"
+description: "Thoughts after a month with the Moonlander"
+tags: ["Keyboard", "ZSA", "Moonlander"]
+date: "2024-06-14T18:41:15+02:00"
+readTime: true
+toc: true
+autonumber: true
+showTags: true
+---
+
 
 # A month with the Moonlander
 

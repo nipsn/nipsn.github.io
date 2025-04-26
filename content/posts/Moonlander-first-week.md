@@ -1,17 +1,13 @@
-+++
-title = "Moonlander First Week"
-date = "2024-05-25T11:52:23+02:00"
-author = "nipsn"
-authorTwitter = "" #do not include @
-cover = ""
-tags = ["Keyboard", "ZSA", "Moonlander"]
-keywords = ["Keyboard", "ZSA", "Moonlander"]
-description = "First week with the Moonlander"
-showFullContent = false
-readingTime = true
-hideComments = false
-color = "" #color from the theme settings
-+++
+---
+title: "Moonlander First Week"
+description: "First week with the Moonlander"
+tags: ["Keyboard", "ZSA", "Moonlander"]
+date: "2024-05-25T11:52:23+02:00"
+readTime: true
+toc: true
+autonumber: true
+showTags: true
+---
 
 # Week 1 report
 

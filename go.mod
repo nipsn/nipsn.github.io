@@ -1,5 +1,5 @@
-module blog/blog
+module blog
 
-go 1.21.1
+go 1.23.8
 
-require github.com/panr/hugo-theme-terminal v2.1.0+incompatible // indirect
+require github.com/tomfran/typo v1.16.0 // indirect

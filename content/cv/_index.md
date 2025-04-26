@@ -11,13 +11,13 @@ Computer engineer with professional experience in Scala, Python and q. Always in
 ## Client projects
 * *(BBVA CIB)* **Several projects using Spark and PySpark** - October 2021-December 2023
 * *(BBVA CIB)* **Code migration from Pandas/SQL to KDB+/q** - January 2023-June 2023
-* *(BBVA CIB)* **Dashboard development in MicroStrategy and KX Dashboards** - April 2022, June 2023 respectively
+* *(BBVA CIB)* **ETL migration to AWS Cloud** - June 2024-October 2024
 
 ## Other projects
 
 * *(Habla Computing)* **JupyterHub deployment on AWS using Docker** - August 2023
 * *(Habla Computing)* **PyKX and ML demos** - July 2023 - October 2023
-* *(Habla Computing)* **PyKX Library Contribution** - November 2023 - Ongoing
+* *(Habla Computing)* **PyKX Library Contribution** - November 2023 - June 2024
 
 ## Trained on (chronologically)
 
@@ -28,6 +28,8 @@ Computer engineer with professional experience in Scala, Python and q. Always in
 
 ## Certifications (chronologically)
 
+**Please refer to my LinkedIn for a more up to date version**
+
 * KX Fundamentals Capstone
 * KX Advanced Course
 * Beginner's Guide to Linux Kernel Development (LFD103)
@@ -35,7 +37,16 @@ Computer engineer with professional experience in Scala, Python and q. Always in
 
 ## Education
 
-**Universidad Rey Juan Carlos, Móstoles** — *Computer Engineering*
+**Universitat Politécnica de Valencia** - *MSc in Computer Engineering and Networks*
+SEPTEMBER 2024 - ONGOING
+
+This master's degree focuses on the lower end of the stack and on computer architecture and network protocols.
+Examples of technologies used during this program include VHDL, CAN Bus, LoRaWAN, I2C, SPI etc.
+
+**For my master's thesis I'm working on developing a kernel driver for one of Waveshare's E-Ink displays. The idea is to use this blog as a place to document my journey.**
+
+
+**Universidad Rey Juan Carlos, Móstoles** — *BSc Computer Engineering*
 
 SEPTEMBER 2017-JUNE 2022
 
@@ -45,6 +56,7 @@ Developed projects using Java, C and some C++ as languages and using tools such 
 **Escuela Oficial de Idiomas, Alcorcón** — *Advanced English C1*
 
 SEPTEMBER 2020-MAY 2021
+
 
 **KX Academy** — *Fundamentals Capstone*  FEBRUARY 2023
 

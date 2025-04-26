@@ -1,19 +1,13 @@
-+++
-title = "Moonlander Second Week"
-date = "2024-06-01T11:28:27+02:00"
-author = "nipsn"
-authorTwitter = "" #do not include @
-cover = ""
-tags = ["Moonlander", "Keyboard", "ZSA"]
-keywords = ["Moonlander", "Keyboard", "ZSA"]
-description = "Second week with the Moonlander"
-showFullContent = false
-readingTime = false
-hideComments = false
-color = "" #color from the theme settings
-+++
-
-# Week 2 report
+---
+title: "Moonlander Second Week"
+description: "Second week with the Moonlander"
+tags: ["Keyboard", "ZSA", "Moonlander"]
+date: "2024-06-01T11:28:27+02:00"
+readTime: true
+toc: true
+autonumber: true
+showTags: true
+---
 
 After last week's post I have to say that the wrist pain has decreased quite a bit. I'm able to lift some weights an all!
 

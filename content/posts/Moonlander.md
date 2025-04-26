@@ -1,18 +1,14 @@
-+++
-title = "Initial thoughts on the Moonlander MK1"
-date = "2024-05-19T13:01:19+02:00"
-author = "nipsn"
-cover = ""
-tags = ["keyboard", "Moonlander", "ZSA"]
-keywords = ["keyboard", "Moonlander", "ZSA"]
-description = "Some thoughts on a keyboard"
-showFullContent = false
-readingTime = true
-hideComments = true
-color = "" #color from the theme settings
-+++
+---
+title: "Initial thoughts on the Moonlander MK1"
+description: "Some thoughts on a keyboard"
+tags: ["Keyboard", "ZSA", "Moonlander"]
+date: "2024-05-19T13:01:19+02:00"
+readTime: true
+toc: true
+autonumber: true
+showTags: true
+---
 
-# Initial thoughts on the Moonlander MK1
 
 ## Where I came from
 
